@@ -11,8 +11,7 @@ class TcpServer extends Command
      *
      * @var string
      */
-    protected $signature = 'server:start';
-
+    protected $signature = 'tcpserver:start';
     /**
      * The console command description.
      *
@@ -35,56 +34,77 @@ class TcpServer extends Command
 
         if (!$server) {
             // If the server creation failed, show an error message
-            echo "Error: $errstr ($errno)\n";  // Using echo instead of $this->error
+            $this->error("Error: $errstr ($errno)");
             return;
         }
 
-        echo "Server started. Waiting for GPS data on $host:$port...\n";  // Using echo instead of $this->info
+        // Log that the server has started
+        $this->info("Server started. Waiting for GPS data on $host:$port...");
+
+        // Keep track of all client connections
+        $clients = [];
+        $clients[] = $server;  // Add the server socket to the clients list
+
+        // Set the server socket to non-blocking mode
+        stream_set_blocking($server, 0);
 
         // Keep the server running to listen for incoming connections
         while (true) {
-            // Accept incoming client connection
-            $client = stream_socket_accept($server);
+            // Monitor all client sockets and the server socket for incoming data
+            $readSockets = $clients;
+            $writeSockets = $exceptSockets = null;
 
-            if ($client) {
-                echo "Client connected.\n";  // Using echo instead of $this->info
+            // Use stream_select to check which sockets have data available to read
+            $numChanged = stream_select($readSockets, $writeSockets, $exceptSockets, null);
 
-                // Set the stream to non-blocking mode to read immediately when data arrives
-                stream_set_blocking($client, 0);
+            if ($numChanged === false) {
+                $this->error("Error in stream_select()");
+                break;
+            }
 
-                // Read the GPS data sent by the client in real-time
-                while (true) {
-                    $data = fgets($client);
+            // Loop through the sockets that are ready to read
+            foreach ($readSockets as $socket) {
+                if ($socket === $server) {
+                    // New client connection
+                    $client = stream_socket_accept($server);
+                    if ($client) {
+                        $this->info("New client connected.");
+                        // Add the new client to the list
+                        $clients[] = $client;
+
+                        // Set the client socket to non-blocking mode
+                        stream_set_blocking($client, 0);
+                    }
+                } else {
+                    // Existing client sending data
+                    $data = fgets($socket);
 
                     if ($data === false) {
-                        // If no data is available, check if the connection is still open
-                        // Connection might be closed by the client
-                        if (feof($client)) {
-                            echo "Client disconnected.\n";  // Using echo instead of $this->info
-                            break;
+                        // If no data or connection is closed
+                        if (feof($socket)) {
+                            $this->info("Client disconnected.");
                         }
-                        usleep(100000); // Sleep for 0.1 seconds to avoid maxing out CPU
-                        continue;
+
+                        // Remove client from the list and close connection
+                        $clients = array_filter($clients, fn($client) => $client !== $socket);
+                        fclose($socket);
+                    } else {
+                        // Data is available, display it
+                        $this->info("Received GPS data: $data");
+                        $gpsdata = new GpsData;  
+                        $gpsdata->data = $data;
+                        $gpsdata->save();
+                        // You can process the GPS data here (e.g., parsing NMEA format)
                     }
-
-                    // Data is available, display it
-                    echo "Received GPS data: $data\n";  // Using echo instead of $this->info
-                    $gpsdata = new GpsData;  
-                    $gpsdata->data = $data;
-                    $gpsdata->save();
-                                      // You can process the GPS data here (e.g., parsing NMEA format)
                 }
-
-                // Close the client connection after receiving data
-                fclose($client);
-            } else {
-                // Sleep for a short time if no client is connected
-                usleep(100000); // Sleep for 0.1 seconds
             }
+
+            // Sleep briefly to avoid 100% CPU usage (can adjust or remove)
+            usleep(100000); // Sleep for 0.1 seconds to avoid maxing out the CPU
         }
 
         // Close the server when done (this won't be reached unless the script is terminated)
         fclose($server);
-
     }
+
 }
