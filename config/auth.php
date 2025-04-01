@@ -52,6 +52,10 @@ return [
             'driver' => 'session',
             'provider' => 'manufacturers',
         ],
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'api',
+        ],
     ],
 
     /*
@@ -88,11 +92,12 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\Manufacturer::class),
         ],
+        'api' =>[
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\MapDevice::class),
+        ]
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        
     ],
 
     /*

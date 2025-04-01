@@ -44,7 +44,7 @@
                     @foreach ($technician as $item)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->dealer_id }}</td>
+                            <td>{{ $item->dealer->pluck('business_name')->first()}}</td>
                             <td>{{ $item->name }}</td>
                             <td>{{ $item->mobile }}</td>
                             <td>{{ $item->email }}</td>

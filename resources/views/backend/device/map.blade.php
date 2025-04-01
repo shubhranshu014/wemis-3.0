@@ -28,8 +28,8 @@
     @endif
     <h5 class="p-2"><em>Its Shows the maped devices list</em></h5>
     <div class="d-flex flex-row-reverse">
-        <div class="p-2"><a href="" class="btn btn-theme" data-bs-toggle="modal"
-                data-bs-target="#exampleModal">Edit</a></div>
+        <div class="p-2"><a href="" class="btn btn-theme" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</a>
+        </div>
         <div class="p-2"><a href="" class="btn btn-theme" data-bs-toggle="modal"
                 data-bs-target="#certificates">Certificates</a></div>
         <div class="p-2"><a href="" class="btn btn-theme" data-bs-toggle="modal"
@@ -53,40 +53,44 @@
                 </thead>
                 <tbody>
                     @foreach ($mapDevices as $item)
-                        <tr>
-                            <td>
-                                {{-- <div class="form-check"> --}}
-                                    <!-- Checkbox inside table cell with proper class -->
-                                    <input class="" type="checkbox" value="{{ $item->id }}"
-                                           id="flexCheckDefault-{{ $loop->index }}" onchange="handleCheckboxSelection(this)">
-                                {{-- </div> --}}
-                            </td>
-                            <td><a href="" class="btn" style="background-color: #260950;color:#fff">Info</a></td>
-                            <td>{{ $item->barcodes->pluck('serialNumber')->first() }}</td>
-                            <td>
-                                @php
-                                    $sim = App\Models\Sim::where('barcode_id', $item->barcodes->pluck('id')->first())->get();
-                                @endphp 
-                                @foreach ($sim as $simdata)
-                                    {{ $simdata->simNo }}
-                                @endforeach
-                            </td>
-                            <td>N/A</td>
-                            <td>{{ $item->vehicle_registration_number }}</td>
-                            <td>{{ $item->dealer->pluck('business_name')->first() }} | <small>{{ $item->dealer->pluck('mobile')->first() }}</small></td>
-                            <td>N/A</td>
-                        </tr>
+                                    <tr>
+                                        <td>
+                                            {{-- <div class="form-check"> --}}
+                                                <!-- Checkbox inside table cell with proper class -->
+                                                <input class="" type="checkbox" value="{{ $item->id }}"
+                                                    id="flexCheckDefault-{{ $loop->index }}" onchange="handleCheckboxSelection(this)">
+                                                {{--
+                                            </div> --}}
+                                        </td>
+                                        <td><a href="" class="btn" style="background-color: #260950;color:#fff">Info</a></td>
+                                        <td>{{ $item->barcodes->pluck('serialNumber')->first() }}</td>
+                                        <td>
+                                            @php
+                                                $sim = App\Models\Sim::where('barcode_id', $item->device_seriel_no)->get();
+                                            @endphp
+                                            @foreach ($sim as $simdata)
+                                                {{ $simdata->simNo }}
+                                            @endforeach
+                                            {{-- {{$item->device_seriel_no}} --}}
+                                        </td>
+                                        <td>{{$item->customer_state  ?? 'N/A'}} / {{$item->customer_arear ?? 'N/A'}}</td>
+                                        <td>{{ $item->vehicle_registration_number }}</td>
+                                        <td>{{ $item->dealer->pluck('business_name')->first() }} |
+                                            <small>{{ $item->dealer->pluck('mobile')->first() }}</small>
+                                        </td>
+                                        <td>{{$item->dealer->pluck('business_name')->first()}}</td>
+                                    </tr>
                     @endforeach
                 </tbody>
             </table>
-            
+
         </div>
     </div>
 
 
     {{-- modal map device --}}
     <div class="modal fade" id="mapDevice" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">
@@ -122,8 +126,7 @@
                                     <!-- State Dropdown -->
                                     <div class="form-group col-md-3">
                                         <label for="state">State</label> <span class="badge text-danger">*</span>
-                                        <select class="form-select form-select-sm state" name="state"
-                                            id=""></select>
+                                        <select class="form-select form-select-sm state" name="state" id=""></select>
                                     </div>
 
                                     <!-- Distributor Dropdown -->
@@ -156,8 +159,7 @@
                                 <div class="row">
                                     <!-- Device Type Dropdown -->
                                     <div class="form-group col-md-4">
-                                        <label for="deviceType">Device Type </label><span
-                                            class="text-danger badge">*</span>
+                                        <label for="deviceType">Device Type </label><span class="text-danger badge">*</span>
                                         <select id="deviceType" name="deviceType" class="form-select form-select-sm">
                                             <option>Select Device Type</option>
                                             <option value="New">New</option>
@@ -192,8 +194,8 @@
                                     <!-- Batch No Input (disabled) -->
                                     <div class="form-group col-md-4">
                                         <label for="batchNo">Batch No.</label>
-                                        <input type="text" class="form-control form-control-sm batch_no"
-                                            id="batchNo" name="batchNo" placeholder="" readonly>
+                                        <input type="text" class="form-control form-control-sm batch_no" id="batchNo"
+                                            name="batchNo" placeholder="" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -230,8 +232,7 @@
                                     </div>
                                     <div class="form-group col-md-4" id="vaicledate">
                                         <label for="date">Date<span class="text-danger badge">*</span></label>
-                                        <input type="date" class="form-control form-control-sm" id="date"
-                                            name="regdate">
+                                        <input type="date" class="form-control form-control-sm" id="date" name="regdate">
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label for="chassisNumber">Chassis Number<span
@@ -267,8 +268,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label for="makeModel">Make & Model<span
-                                                class="text-danger badge">*</span></label>
+                                        <label for="makeModel">Make & Model<span class="text-danger badge">*</span></label>
                                         <input type="text" class="form-control form-control-sm" id="vaiModel"
                                             name="vaiclemodel" placeholder="Enter Make & Model">
                                     </div>
@@ -280,13 +280,11 @@
 
                                     <div class="form-group col-md-4">
                                         <label for="insurance">Insu. Renew date</label>
-                                        <input type="date" class="form-control" id="insurance"
-                                            name="vaicleinsurance">
+                                        <input type="date" class="form-control" id="insurance" name="vaicleinsurance">
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label for="panicButton">Pollution Renew date</label>
-                                        <input type="date" class="form-control" id="panicButton"
-                                            name="pollutiondate">
+                                        <input type="date" class="form-control" id="panicButton" name="pollutiondate">
                                     </div>
                                 </div>
                             </div>
@@ -367,8 +365,8 @@
                                     <!-- Pin Code -->
                                     <div class="col-md-4 form-group">
                                         <label for="pincode">Pin Code <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control form-control-sm"
-                                            name="coustomerPincode" id="pincode">
+                                        <input type="text" class="form-control form-control-sm" name="coustomerPincode"
+                                            id="pincode">
                                     </div>
 
                                     <!-- Address -->
@@ -381,8 +379,8 @@
                                     <!-- RTO Division -->
                                     <div class="col-md-4 form-group">
                                         <label for="rtoDivision">RTO Division <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control form-control-sm"
-                                            name="coustomerRtoname" id="rtoname" placeholder="Enter RTO Division">
+                                        <input type="text" class="form-control form-control-sm" name="coustomerRtoname"
+                                            id="rtoname" placeholder="Enter RTO Division">
                                     </div>
 
                                     <!-- Aadhaar -->
@@ -409,8 +407,8 @@
                                 <div class="row justify-content-center">
                                     @foreach ($subscriptions as $item)
                                         <div class="col-md-3 mb-2 Packages">
-                                            <div class="card text-center shadow-sm h-100 select-subscription"
-                                                data-id="" style="width: 100%; cursor: pointer;">
+                                            <div class=" text-center shadow-sm h-100 select-subscription" data-id=""
+                                                style="width: 100%; cursor: pointer;">
                                                 <!-- Added cursor:pointer for click indication -->
                                                 <div class="card-body">
                                                     <div class="d-flex justify-content-between">
@@ -462,8 +460,8 @@
                                 <div class="form-group col-md-4">
                                     <label for="firstName" class="form-label">Name <span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" id="technician_name"
-                                        name="name" placeholder="First Name" require>
+                                    <input type="text" class="form-control form-control-sm" id="technician_name" name="name"
+                                        placeholder="First Name" require>
                                 </div>
                                 {{-- <div class="form-group col-md-4">
                                     <label for="lastName" class="form-label">Last Name <span
@@ -472,27 +470,24 @@
                                         name="techlastName" placeholder="Last Name" require>
                                 </div> --}}
                                 <div class="form-group col-md-4">
-                                    <label for="email" class="form-label">Email <span
-                                            class="text-danger">*</span></label>
+                                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control form-control-sm" id="technician_email"
                                         name="techemail" placeholder="Email">
                                 </div>
                                 {{-- <div class="form-group col-md-4">
-                                    <label for="gender" class="form-label">Gender <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" id="Gender"
-                                        name="techgender" placeholder="Gender">
+                                    <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control form-control-sm" id="Gender" name="techgender"
+                                        placeholder="Gender">
                                 </div> --}}
                                 <div class="form-group col-md-4">
-                                    <label for="mobile" class="form-label">Mobile <span
-                                            class="text-danger">*</span></label>
+                                    <label for="mobile" class="form-label">Mobile <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control form-control-sm" id="technician_mobile"
                                         name="techmobile" placeholder="Mobile">
                                 </div>
                                 {{-- <div class="form-group col-md-4">
                                     <label for="dob" class="form-label">Date Of Birth</label>
-                                    <input type="date" class="form-control form-control-sm" id="dob"
-                                        name="techdob" placeholder="Date Of Birth">
+                                    <input type="date" class="form-control form-control-sm" id="dob" name="techdob"
+                                        placeholder="Date Of Birth">
                                 </div> --}}
                             </div>
                         </div>
@@ -508,8 +503,7 @@
                             <div class="form-group col-md-4">
                                 <label for="InvoiceNo" class="form-label">Invoice No<span
                                         class="text-danger">*</span></label>
-                                <input type="text" class="form-control form-control-sm" id="InvoiceNo"
-                                    name="InvoiceNo">
+                                <input type="text" class="form-control form-control-sm" id="InvoiceNo" name="InvoiceNo">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="Vehicle KM Reading" class="form-label">Vehicle KM
@@ -526,8 +520,7 @@
                             <div class="form-group col-md-4">
                                 <label for="Mapped Date" class="form-label">Mapped Date<span
                                         class="text-danger">*</span></label>
-                                <input type="date" class="form-control form-control-sm" id="MappedDate"
-                                    name="MappedDate">
+                                <input type="date" class="form-control form-control-sm" id="MappedDate" name="MappedDate">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="No Of Panic Buttons" class="form-label">No Of Panic
@@ -550,57 +543,47 @@
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="vehicle" class="form-label">Vehicle</label>
-                                <input type="file" class="form-control form-control-sm" id="vehicle"
-                                    name="vehicleimg">
+                                <input type="file" class="form-control form-control-sm" id="vehicle" name="vehicleimg">
                             </div>
                             <div class="col-md-4">
                                 <label for="rc" class="form-label">RC</label>
-                                <input type="file" class="form-control form-control-sm" id="rc"
-                                    name="vehiclerc">
+                                <input type="file" class="form-control form-control-sm" id="rc" name="vehiclerc">
                             </div>
                             <div class="col-md-4">
                                 <label for="device" class="form-label">Device</label>
-                                <input type="file" class="form-control form-control-sm" id="device"
-                                    name="vaicledeviceimg">
+                                <input type="file" class="form-control form-control-sm" id="device" name="vaicledeviceimg">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="pan" class="form-label">Pan Card</label>
-                                <input type="file" class="form-control form-control-sm" id="pan"
-                                    name="pancardimg">
+                                <input type="file" class="form-control form-control-sm" id="pan" name="pancardimg">
                             </div>
                             <div class="col-md-4">
                                 <label for="aadhaar" class="form-label">Aadhaar Card</label>
-                                <input type="file" class="form-control form-control-sm" id="aadhaar"
-                                    name="aadharcardimg">
+                                <input type="file" class="form-control form-control-sm" id="aadhaar" name="aadharcardimg">
                             </div>
                             <div class="col-md-4">
                                 <label for="invoice" class="form-label">Invoice</label>
-                                <input type="file" class="form-control form-control-sm" id="invoice"
-                                    name="invoiceimg">
+                                <input type="file" class="form-control form-control-sm" id="invoice" name="invoiceimg">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="signature" class="form-label">Signature</label>
-                                <input type="file" class="form-control form-control-sm" id="signature"
-                                    name="signatureimg">
+                                <input type="file" class="form-control form-control-sm" id="signature" name="signatureimg">
                             </div>
                             <div class="col-md-4">
                                 <label for="panic" class="form-label">Panic Button with
                                     Sticker</label>
-                                <input type="file" class="form-control form-control-sm" id="panic"
-                                    name="panicbuttonimg">
+                                <input type="file" class="form-control form-control-sm" id="panic" name="panicbuttonimg">
                             </div>
                         </div>
-
-                        <div class="text-center">
-                            <button type="submit" class="btn"
-                                style="background-color: #260950;color:#fff">Submit</button>
-                            <button type="reset" class="btn btn-secondary">Cancel</button>
-                        </div>
                     </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn" style="background-color: #260950;color:#fff">Submit</button>
+                    <button type="reset" class="btn btn-secondary">Cancel</button>
                 </div>
                 </form>
             </div>
@@ -653,8 +636,8 @@
         </div>
     </div>
     <script>
-        $(document).ready(function() {
-            $('.state').change(function() {
+        $(document).ready(function () {
+            $('.state').change(function () {
                 $('.distributor').empty();
                 $('.distributor').append('<option value="null">Select distributer</option>');
                 const state = $(this).val();
@@ -664,12 +647,12 @@
                         url: `/manufacturer/fetch/distributer/${state}`,
                         type: 'GET',
                         dataType: 'json',
-                        success: function(data) {
+                        success: function (data) {
                             //alert(JSON.stringify(data));
                             data.forEach(distributer => {
                                 $(`.distributor`).append(`
-    <option value="${distributer.id}">${distributer.business_name}</option>
-    `);
+            <option value="${distributer.id}">${distributer.business_name}</option>
+            `);
                             });
                         }
                     });
@@ -679,8 +662,8 @@
     </script>
 
     <script>
-        $(document).ready(function() {
-            $('.distributor').change(function() {
+        $(document).ready(function () {
+            $('.distributor').change(function () {
                 $('.dealer').empty(); // Clear existing options in the dealer dropdown
                 $('.dealer').append('<option disabled selected>Select dealer</option>');
                 const distributer_id = $(this).val(); // Get the selected distributor ID
@@ -689,19 +672,19 @@
                         url: `/manufacturer/fetch/dealer/${distributer_id}`, // API endpoint
                         type: 'GET',
                         dataType: 'json',
-                        success: function(data) {
+                        success: function (data) {
                             // Check if data is an array and populate dealer dropdown
                             if (Array.isArray(data) && data.length > 0) {
                                 data.forEach(dealer => {
                                     $('.dealer').append(`
-                        <option value="${dealer.id}">${dealer.business_name}</option>
-                    `);
+                                <option value="${dealer.id}">${dealer.business_name}</option>
+                            `);
                                 });
                             } else {
                                 alert('No dealers found for the selected distributor.');
                             }
                         },
-                        error: function(xhr, status, error) {
+                        error: function (xhr, status, error) {
                             console.error('AJAX error:', status, error);
                             alert('Failed to fetch dealers. Please try again.');
                         }
@@ -714,11 +697,9 @@
     </script>
 
     <script>
-        $(document).ready(function() {
-            $(".Packages").click(function() {
-
+        $(document).ready(function () {
+            $(".Packages").click(function () {
                 // You can also access the package data attributes or other content
-                // Example: Get the package name or price
                 var packageId = $(this).find('.packageId').text();
                 var packagePrice = $(this).find('.card-body h5').first().text();
 
@@ -726,11 +707,18 @@
 
                 // Optionally, you could set the value in the hidden input field
                 $("#subscriptionpackage").val(packageId); // Set package name in hidden input
+
+                // Change the background color of the clicked element
+                $(this).css('background-color', 'green');  // Set active color
+
+                // Reset the background color of all other .Packages elements
+                $(".Packages").not(this).css('background-color', ''); // Reset others
             });
+
         });
     </script>
     <script>
-        $('.dealer').change(function() {
+        $('.dealer').change(function () {
             const dealer = $(this).val();
             alert(dealer);
             if (dealer) {
@@ -738,7 +726,7 @@
                     url: `/manufacturer/fetch/device-by-dealer/${dealer}`,
                     type: 'GET',
                     dataType: 'json',
-                    success: function(data) {
+                    success: function (data) {
                         alert(JSON.stringify(data))
                         //Validate response
                         if (Array.isArray(data) && data.length > 0) {
@@ -747,8 +735,8 @@
                                 '<option value="null">Select Device No</option>');
                             data.forEach(device => {
                                 $('.deviceno').append(`
-                                <option value="${device.barcode.id}">${device.barcode.IMEINO}</option>
-                            `);
+                                        <option value="${device.barcode.id}">${device.barcode.IMEINO}</option>
+                                    `);
                             });
                         } else {
                             // No distributors found
@@ -756,7 +744,7 @@
                                 '<option value="null">No Device Found</option>');
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         // Handle errors
                         $('.deviceno').empty().append(
                             '<option value="null">Error Loading Device</option>');
@@ -767,7 +755,7 @@
                     url: `/manufacturer/fetch/technician/${dealer}`,
                     type: 'GET',
                     dataType: 'json',
-                    success: function(data) {
+                    success: function (data) {
                         alert(JSON.stringify(data));
                         if (Array.isArray(data) && data.length > 0) {
                             // Populate distributors
@@ -775,8 +763,8 @@
                                 '<option value="null">Select Technician No</option>');
                             data.forEach(technician => {
                                 $('.technician').append(`
-                                <option value="${technician.id}" name="${technician.name}" email="${technician.email}" mobile="${technician.mobile}">${technician.name}</option>
-                            `);
+                                        <option value="${technician.id}" name="${technician.name}" email="${technician.email}" mobile="${technician.mobile}">${technician.name}</option>
+                                    `);
                             });
                         } else {
                             // No distributors found
@@ -791,7 +779,7 @@
         });
     </script>
     <script>
-        $('.technician').change(function() {
+        $('.technician').change(function () {
             // Get the selected option element
             const selectedOption = $(this).find('option:selected');
 
@@ -812,7 +800,7 @@
         });
     </script>
     <script>
-        $('.deviceno').change(function() {
+        $('.deviceno').change(function () {
             const deviceNo = $(this).val();
             // alert(deviceNo);
             if (deviceNo) {
@@ -820,31 +808,31 @@
                     url: `/manufacturer/fetch/simInfoByBarcode/${deviceNo}`,
                     type: 'GET',
                     dataType: 'json',
-                    success: function(data) {
+                    success: function (data) {
                         if (data) {
                             alert(JSON.stringify(data))
                             data.forEach(sim_info => {
                                 $('.simInfo').append(
                                     ` 
-                                    <div class="row py-2">
-                                      <div class="col-md-3">
-                                        <label>Sim No.</label>
-                                        <input class="form-control form-control-sm" value="${sim_info.simNo}">
-                                        </div> 
-                                         <div class="col-md-3">
-                                             <label>ICCID No.</label>
-                                             <input class="form-control form-control-sm" value="${sim_info.ICCIDNo}">
-                                        </div> 
-                                         <div class="col-md-3">
-                                             <label>Validity</label>
-                                             <input class="form-control form-control-sm" value="${sim_info.validity}">
-                                        </div> 
-                                        <div class="col-md-3">
-                                            <label>Operator</label>
-                                            <input class="form-control form-control-sm" value="${sim_info.operator}">
-                                        </div>  
-                                    </div>
-                                    `
+                                            <div class="row py-2">
+                                              <div class="col-md-3">
+                                                <label>Sim No.</label>
+                                                <input class="form-control form-control-sm" value="${sim_info.simNo}">
+                                                </div> 
+                                                 <div class="col-md-3">
+                                                     <label>ICCID No.</label>
+                                                     <input class="form-control form-control-sm" value="${sim_info.ICCIDNo}">
+                                                </div> 
+                                                 <div class="col-md-3">
+                                                     <label>Validity</label>
+                                                     <input class="form-control form-control-sm" value="${sim_info.validity}">
+                                                </div> 
+                                                <div class="col-md-3">
+                                                    <label>Operator</label>
+                                                    <input class="form-control form-control-sm" value="${sim_info.operator}">
+                                                </div>  
+                                            </div>
+                                            `
                                 )
                             });
                             // Example: populate a select dropdown with the returned data
@@ -859,7 +847,7 @@
                             alert('No data available')
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         // Handle AJAX error
                         console.error('AJAX request failed:', status, error);
                         // $('.deviceno').empty().append(
@@ -893,7 +881,7 @@
         };
 
         // Handle country selection
-        $('.customer-country').on('change', function() {
+        $('.customer-country').on('change', function () {
             $('.customer-state').empty();
             $('.customer-district').empty(); // Clear the district dropdown when country changes
             let value = this.value;
@@ -933,7 +921,7 @@
         });
 
         // Handle state selection to populate districts
-        $('.customer-state').on('change', function() {
+        $('.customer-state').on('change', function () {
             $('.customer-district').empty(); // Clear existing districts
             let selectedState = this.value;
 
@@ -962,7 +950,7 @@
             var checkboxes = document.querySelectorAll('.form-check-input');
 
             // Loop through all checkboxes
-            checkboxes.forEach(function(item) {
+            checkboxes.forEach(function (item) {
                 // If the current checkbox is not the one being clicked, uncheck it
                 if (item !== checkbox) {
                     item.checked = false;

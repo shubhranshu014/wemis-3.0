@@ -17,7 +17,7 @@ class TechnicianController extends Controller
 
         $technician = [];
         foreach ($dealer as $key => $value) {
-            $technician = Technician::where('dealer_id',$dealer[$key]->id)->get();
+            $technician = Technician::with('dealer')->where('dealer_id',$dealer[$key]->id)->get();
         }
         return view("backend.technician.index")->with(compact('distributor','technician'));
     }

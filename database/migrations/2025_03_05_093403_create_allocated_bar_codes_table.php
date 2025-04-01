@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('allocated_bar_codes', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('mfg_id');  // Add the foreign key column
+            $table->foreign('mfg_id')                          // Define the foreign key constraint
+                  ->references('id')->on('manufacturers')
+                  ->onUpdate('cascade')
+                  ->onDelete('cascade');
             $table->unsignedBigInteger('distributor_id');
             $table->foreign('distributor_id')->references('id')->on('distributors')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('dealer_id')->nullable();

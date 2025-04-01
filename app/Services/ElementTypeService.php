@@ -12,10 +12,12 @@ class ElementTypeService
         return $types;
     }
     public function store($request){
+        // dd($request->all());
         try {
             $element = new ElementType();
             $element->element_id = $request["element"];
             $element->type = $request["type"];
+            $element->sim_count = $request['no_of_sim'];
             $element->save();
         
         } catch (Exception $e) {

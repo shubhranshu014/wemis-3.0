@@ -21,7 +21,11 @@
             <div class="card text-white bg-total mb-3 " style="background-color: #260950">
                 <div class="card-body">
                     {{-- <i class="fa-solid fa-barcode"></i> --}}
-                    <h5 class="card-title text-white">5347</h5>
+                    <h5 class="card-title text-white">
+                        @php
+                            echo App\Models\BarCode::where('mfg_id', auth('manufacturer')->user()->id)->count();
+                           @endphp
+                    </h5>
                     <p class="card-text text-white">TOTAL DEVICE</p>
                 </div>
             </div>
@@ -29,7 +33,11 @@
         <div class="col-md-3">
             <div class="card text-white mb-3" style="background-color: #086c57">
                 <div class="card-body">
-                    <h5 class="card-title text-white">86</h5>
+                    <h5 class="card-title text-white">
+                        @php
+                            echo App\Models\BarCode::where('mfg_id', auth('manufacturer')->user()->id)->where('status', '0')->count();
+                          @endphp
+                    </h5>
                     <p class="card-text text-white">AVAILABLE DEVICE</p>
                 </div>
             </div>
@@ -37,7 +45,11 @@
         <div class="col-md-3">
             <div class="card text-white mb-3" style="background-color: #e9b517">
                 <div class="card-body">
-                    <h5 class="card-title text-white">5261</h5>
+                    <h5 class="card-title text-white">
+                        @php
+                            echo App\Models\BarCode::where('mfg_id', auth('manufacturer')->user()->id)->where('status', '1')->count();
+                          @endphp
+                    </h5>
                     <p class="card-text text-white">ALLOCATED DEVICE</p>
                 </div>
             </div>
@@ -45,7 +57,11 @@
         <div class="col-md-3">
             <div class="card text-white bg-danger mb-3">
                 <div class="card-body">
-                    <h5 class="card-title text-white">3449</h5>
+                    <h5 class="card-title text-white">
+                        @php
+                        echo  App\Models\BarCode::where('mfg_id',auth('manufacturer')->user()->id)->where('status','2')->count();
+                      @endphp
+                    </h5>
                     <p class="card-text">INSTALLED DEVICE</p>
                 </div>
             </div>
@@ -64,35 +80,35 @@
         </div>
     @endif
     <em>Its Shows the list of allocated bar codes</em>
-    <table class="table dataTable">
+    <table class="table dataTable table-striped">
         <thead>
             <tr>
                 <th>Serial No</th>
                 <th>Distributor Name</th>
                 <th>Dealer Name</th>
                 <th>Barcode No</th>
-                <th>Net Amount (₹) </th>
+                {{-- <th>Net Amount (₹) </th> --}}
                 <th>Allocated At</th>
             </tr>
         </thead>
         <tbody>
-            {{-- @foreach ($barcodeAllocations as $index => $allocation)
+            @foreach ($allocatedBarcode as $barcode)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $allocation->distributor->business_name ?? 'N/A' }}</td>
-                    <td>{{ $allocation->dealer->business_name ?? 'N/A' }}</td>
-                    <td>{{ $allocation->barcode->barcodeNo }}</td>
-                    <td>
-                    </td>
-                    <td>{{ $allocation->created_at }}</td>
+                    <td>{{ $barcode->distributor->pluck('business_name')->first() ?? 'N/A' }}</td>
+                    <td>{{ $barcode->dealer->pluck('business_name')->first() ?? 'N/A' }}</td>
+                    <td>{{ $barcode->barcode->pluck('barcodeNo')->first() }}</td>
+                    {{-- <td>
+                    </td> --}}
+                    <td>{{ $barcode->created_at }}</td>
                 </tr>
-            @endforeach --}}
+            @endforeach
         </tbody>
     </table>
 
     <!-- Modal -->
     <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModal" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="createModal">Allocate Bar Code</h1>
@@ -138,8 +154,7 @@
                             </div>
 
                             <div class="col-md-3">
-                                <label for="" class="form-label">Element<span
-                                        class="badge text-secondary">*</span></label>
+                                <label for="" class="form-label">Element<span class="badge text-secondary">*</span></label>
                                 <Select class="form-select form-select-sm element" name="element">
                                     <option>Select Element</option>
                                     @foreach ($element as $data)
@@ -167,8 +182,7 @@
                             </div>
 
                             <div class="col-md-3">
-                                <label for="" class="form-label">Voltage<span
-                                        class="badge text-secondary">*</span></label>
+                                <label for="" class="form-label">Voltage<span class="badge text-secondary">*</span></label>
                                 <Select class="form-select form-select-sm voltage" name="voltage">
                                     <option value="">Select Voltage</option>
                                 </Select>
@@ -183,8 +197,7 @@
                             </div>
 
                             <div class="col-md-3">
-                                <label for="" class="form-label">Type<span
-                                        class="badge text-secondary">*</span></label>
+                                <label for="" class="form-label">Type<span class="badge text-secondary">*</span></label>
                                 <Select class="form-select form-select-sm" name="type" id="type">
                                     <option value="">NEW</option>
                                     <option value="">RENEW</option>
@@ -245,8 +258,8 @@
     </style>
 
     <script>
-        $(document).ready(function() {
-            $('.state').change(function() {
+        $(document).ready(function () {
+            $('.state').change(function () {
                 $('.distributor').empty();
                 $('.distributor').append('<option value="null">Select distributer</option>');
                 const state = $(this).val();
@@ -256,12 +269,12 @@
                         url: `/manufacturer/fetch/distributer/${state}`,
                         type: 'GET',
                         dataType: 'json',
-                        success: function(data) {
+                        success: function (data) {
                             //alert(JSON.stringify(data));
                             data.forEach(distributer => {
                                 $(`.distributor`).append(`
-            <option value="${distributer.id}">${distributer.business_name}</option>
-          `);
+                <option value="${distributer.id}">${distributer.business_name}</option>
+              `);
                             });
                         }
                     });
@@ -271,8 +284,8 @@
     </script>
 
     <script>
-        $(document).ready(function() {
-            $('.distributor').change(function() {
+        $(document).ready(function () {
+            $('.distributor').change(function () {
                 $('.dealer').empty(); // Clear existing options in the dealer dropdown
                 $('.dealer').append('<option disabled selected>Select dealer</option>');
                 const distributer_id = $(this).val(); // Get the selected distributor ID
@@ -281,19 +294,19 @@
                         url: `/manufacturer/fetch/dealer/${distributer_id}`, // API endpoint
                         type: 'GET',
                         dataType: 'json',
-                        success: function(data) {
+                        success: function (data) {
                             // Check if data is an array and populate dealer dropdown
                             if (Array.isArray(data) && data.length > 0) {
                                 data.forEach(dealer => {
                                     $('.dealer').append(`
-                            <option value="${dealer.id}">${dealer.business_name}</option>
-                        `);
+                                <option value="${dealer.id}">${dealer.business_name}</option>
+                            `);
                                 });
                             } else {
                                 alert('No dealers found for the selected distributor.');
                             }
                         },
-                        error: function(xhr, status, error) {
+                        error: function (xhr, status, error) {
                             console.error('AJAX error:', status, error);
                             alert('Failed to fetch dealers. Please try again.');
                         }
@@ -306,9 +319,9 @@
     </script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             const $element = $('.element');
-            $element.on('change', function() {
+            $element.on('change', function () {
                 const selectedValue = $(this).val();
                 console.log('Selected Value:', selectedValue); // Log the selected value for debugging
                 const $form = $(this).closest('form'); // Cache the form for reuse
@@ -322,7 +335,7 @@
                     url: `/manufacturer/fetch/element-type/${selectedValue}`,
                     type: 'GET',
                     dataType: 'json',
-                    success: function(data) {
+                    success: function (data) {
                         $elementType.empty().append(
                             '<option value="">Please Select Type</option>'); // Clear options
                         if (data && data.length > 0) {
@@ -339,7 +352,7 @@
                                 '<option value="">No options available</option>');
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error('Error:', error); // Log the error for debugging
                         $elementType.empty().append(
                             '<option value="">Failed to load options</option>');
@@ -348,7 +361,7 @@
             });
 
             const $element_type = $('.element_type');
-            $element_type.on('change', function() {
+            $element_type.on('change', function () {
                 const $form = $(this).closest('form');
                 const $model_no = $form.find(".model-no");
                 const $voltage = $form.find(".voltage");
@@ -360,7 +373,7 @@
                     url: `/manufacturer/fetch/model-no/${$(this).val()}`,
                     type: 'GET',
                     dataType: 'json',
-                    success: function(data) {
+                    success: function (data) {
                         if (data && data.length > 0) {
                             $model_no.empty().append(
                                 '<option value="">Select Model No</option>');
@@ -380,7 +393,7 @@
                             $model_no.append('<option value="">No options available</option>');
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error('Error:', error); // Log the error for debugging
                         $model_no.empty().append(
                             '<option value="">Failed to load options</option>');
@@ -391,7 +404,7 @@
             });
 
             const $modelNo = $('.model-no');
-            $modelNo.on('change', function() {
+            $modelNo.on('change', function () {
                 const $form = $(this).closest('form');
                 const $partNo = $form.find(".partNo");
 
@@ -399,7 +412,7 @@
                     url: `/manufacturer/fetch/part-no/${$(this).val()}`,
                     type: 'GET',
                     dataType: 'json',
-                    success: function(data) {
+                    success: function (data) {
                         if (data && data.length > 0) {
                             data.forEach(partNo => {
                                 $partNo.append(
@@ -413,7 +426,7 @@
                             $partNo.append('<option value="">No options available</option>');
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error('Error:', error);
                         $partNo.empty().append(
                             '<option value="">Failed to load options</option>');
@@ -422,7 +435,7 @@
             });
 
             const $partNo = $('.partNo');
-            $partNo.on('change', function() {
+            $partNo.on('change', function () {
                 const $form = $(this).closest('form');
                 const $available_barcodes = $form.find("#available_barcodes");
 
@@ -430,10 +443,10 @@
                     url: `/manufacturer/fetch/barcode/${$(this).val()}`,
                     type: 'GET',
                     dataType: 'json',
-                    success: function(response) {
+                    success: function (response) {
                         $available_barcodes.empty();
                         if (response.barcodes && response.barcodes.length > 0) {
-                            response.barcodes.forEach(function(barcode) {
+                            response.barcodes.forEach(function (barcode) {
                                 const option =
                                     `<option value="${barcode.id}">${barcode.barcodeNo}</option>`;
                                 $available_barcodes.append(option);
@@ -447,7 +460,7 @@
                                 '<option disabled>No barcodes available</option>');
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error('Error fetching barcodes:', error);
                     }
                 });
@@ -455,9 +468,9 @@
         });
     </script>
     <script>
-        $(document).ready(function() {
-            $('#btn-add').click(function() {
-                $('#available_barcodes option:selected').each(function() {
+        $(document).ready(function () {
+            $('#btn-add').click(function () {
+                $('#available_barcodes option:selected').each(function () {
                     const option = $(this);
                     option.remove();
                     $('#allocated_barcodes').append(option);
@@ -465,8 +478,8 @@
                 updateAllocatedCount();
             });
 
-            $('#btn-remove').click(function() {
-                $('#allocated_barcodes option:selected').each(function() {
+            $('#btn-remove').click(function () {
+                $('#allocated_barcodes option:selected').each(function () {
                     const option = $(this);
                     option.remove();
                     $('#available_barcodes').append(option);

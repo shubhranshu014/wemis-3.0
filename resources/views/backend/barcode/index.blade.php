@@ -9,7 +9,7 @@
             <div class="d-flex justify-content-md-end justify-content-sm-center pe-2">
                 <a href="{{ route('create.admin') }}" class="btn btn-sm btn-theme" data-bs-toggle="modal"
                     data-bs-target="#createModal" style="border: 1px solid #fff;white-space: nowrap;">
-                    Bar Code
+                    Add Bar Code
                 </a>
             </div>
         </div>
@@ -285,7 +285,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('barcode.store') }}" method="post">
+                    <form action="{{ route('barcode.store') }}" method="post" id="creationForm" enctype="multipart/form-data">
                         @csrf
                         <div class="row mb-2">
                             <div class="col-md-6">
@@ -354,23 +354,22 @@
                                 <input type="text" name="batchNo" id="batchNo" value="{{ $batchNo }}"
                                     class="form-control form-control-sm">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3" id="creationTypeContainer">
                                 <label for="BarCodeCreationType" class="form-label">BarCode Creation
                                     Type </label>
-                                <select class="form-select form-select-sm" name="BarCodeCreationType"
-                                    id="BarCodeCreationType">
-                                    <option value="select type">Select Creation Type</option>
-                                    <option value="Other">Other</option>
-                                    <option value="Import">Import</option>
+                                <select class="form-select form-select-sm" id="barCodeCreationType">
+                                    <option value="select type disabled">Select Creation Type</option>
+                                    {{-- <option value="Other">Other</option> --}}
+                                    <option value="import">Import</option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3" id="barcodeNo">
                                 <label for="" class="form-label">Barcode No</label>
                                 <input type="text" class="form-control form-control-sm" name="barcodeNo">
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row" id="bottomRow">
                             <div class="col-md-2">
                                 <label class="form-label">Is Renew</label><br>
                                 <select name="is_renew" id="" class="form-select form-select-sm">
@@ -425,7 +424,7 @@
                             '<option value="">Select Element Type</option>');
                         if (data && data.length > 0) {
                             data.forEach(type => {
-                                alert(JSON.stringify(type));
+                                //alert(JSON.stringify(type));
                                 $elementType.append(
                                     `<option value="${type.id}" simcount="${type.sim_count}">${type.type}</option>`
                                 );
@@ -680,6 +679,39 @@
             });
 
 
+        });
+    </script>
+
+    <script>
+        const $barCodeCreationType = $('#barCodeCreationType');
+
+        $barCodeCreationType.on('change', function() {
+            const selectedValue = $(this).val();
+
+            // Check if the selected value is 'import'
+            if (selectedValue == 'import') {
+                alert('import'); // Show an alert to confirm the condition
+
+                // Remove unnecessary elements
+                $("#simDetails").remove();
+                $("#barcodeNo").remove();
+                $("#bottomRow").remove();
+
+                // Set the form action to the import route
+                $('#creationForm').attr('action', '{{ route('barcode.spreadsheet.import') }}');
+
+                // Alert the simcount attribute (you may want to handle this part better, as it doesn't seem to do anything visible)
+                alert($('.element_type').find('option:selected').attr('simcount'));
+
+                // Dynamically add a file upload field after the #creationTypeContainer
+                $('#creationTypeContainer').after(
+                    `<div class="col-md-3">
+                    <label for="" class='form-label'>Upload File (xml,csv)</label>
+                    <a href="{{ route('barcode.templete.download', ['filename' => 'ais140.xlsx']) }}">Download</a>
+                    <input type="file" name="import" class="form-control form-control-sm">
+                </div>`
+                );
+            }
         });
     </script>
 @endsection

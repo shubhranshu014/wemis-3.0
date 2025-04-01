@@ -11,4 +11,14 @@ class AllocatedBarCode extends Model
     {
         return $this->hasOne(BarCode::class, 'id','barcode_id');
     }
+
+    public function distributor(): HasOne
+    {
+        return $this->hasOne(Distributor::class, 'id','distributor_id');
+    }
+
+    public function dealer(): HasOne
+    {
+        return $this->hasOne(Dealer::class, 'id','dealer_id');
+    }
 }

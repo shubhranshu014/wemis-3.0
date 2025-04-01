@@ -72,7 +72,7 @@
                                         class="chosen-select form-control form-control-sm" multiple>
 
                                         @foreach ($element as $item)
-                                            <option value="{{ $item->id }}">{{ $item->element->pluck('name')->first()}}</option>
+                                            <option value="{{ $item->element_id }}">{{ $item->element->pluck('name')->first()}}</option>
                                         @endforeach
                                     </select>
                                     @error('element')

@@ -24,11 +24,11 @@ class TestingAgencyController extends Controller
 
         try {
             $this->testingAgencyService->store($testingAgencyRequest);
-            return redirect()->back()->with('success', 'TAC Number created successfully!');
+            return redirect()->back()->with('success', 'Testing agency created successfully!');
         } catch (\Exception $e) {
             // Log the error and return an error message
             \Log::error('Error storing element: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'An error occurred while creating the model number.');
+            return redirect()->back()->with('error', 'An error occurred while creating the testing agency.');
         }
     }
 

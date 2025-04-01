@@ -95,8 +95,8 @@
                 $mfg = auth('manufacturer')->user();
             @endphp
             <!-- Use the full URL path for the image -->
-            <img src="{{"http://127.0.0.1:8000/storage/$mfg->logo"}}"
-                class="img-fluid" style="width: 100px;height:100px">
+            <img src="{{ url('/storage/uploads/174270797673_logo.png') }}" class="img-fluid"
+                style="width: 100px; height: 100px;">
             <h6>An ISO 9001:2015 & NABCB Certified Company</h6>
         </div>
     </div>

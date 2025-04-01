@@ -3,17 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class MapDevice extends Model
+class MapDevice extends Authenticatable
 {
-    public function barcodes(): HasOne
+    use HasFactory, Notifiable, HasApiTokens;
+    protected function casts(): array
     {
-        return $this->HasOne(BarCode::class, 'id','device_seriel_no');
+        return [
+            'password' => 'hashed',
+        ];
     }
-
-    public function dealer(): HasOne{
-
-        return $this->HasOne(Dealer::class, 'id','dealer_id');
-    }
+    
 }

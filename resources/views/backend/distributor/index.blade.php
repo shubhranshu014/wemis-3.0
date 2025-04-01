@@ -105,7 +105,7 @@
                                     <div class="col-md-3">
                                         <label for="">Email<span class="badge text-secondary">*</span></label>
                                         <input type="email" class="form-control form-control-sm" name="email"
-                                            value="">
+                                            value="{{old('email')}}">
                                         @error('email')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror

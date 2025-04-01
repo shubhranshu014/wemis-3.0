@@ -23,6 +23,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\BarCodeController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\BarCodeImportController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -199,6 +200,8 @@ Route::middleware(['auth:manufacturer'])->prefix('manufacturer')->group(function
     // Route::get('/manufacturer/barcode/list', action: [BarcodeController::class, 'index'])->name('manufacturer.barcode.list');
     Route::get('/allocate/barcode', action: [BarcodeController::class, 'allocate'])->name('barcode.allocate');
     Route::post('/allocate/barcode/store', action: [BarcodeController::class, 'storeAllocate'])->name('barcode.allocate.store');
+    Route::get('/download/templete/{filename}', [BarCodeImportController::class, 'download'])->name('barcode.templete.download');
+    Route::post('/barcode/import', [BarCodeImportController::class, 'import'])->name('barcode.spreadsheet.import');
 
     //map dcevice
     Route::get('/map-deive', [DeviceController::class, 'map'])->name('map.device');

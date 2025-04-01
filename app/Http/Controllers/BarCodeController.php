@@ -71,7 +71,8 @@ class BarCodeController extends Controller
 
     public function allocate(){
         $element = ManufacturerElement::with('element')->where('mfg_id',auth('manufacturer')->user()->id)->get();
-        return view("backend.barcode.allocate")->with(compact('element'));
+        $allocatedBarcode = AllocatedBarCode::with('barcode','distributor','dealer')->where('mfg_id',auth('manufacturer')->user()->id)->get();
+        return view("backend.barcode.allocate")->with(compact('element','allocatedBarcode'));
     }
 
     public function storeAllocate(Request $request){
@@ -79,8 +80,9 @@ class BarCodeController extends Controller
         $barcode = $request['allocated_barcodes'];
         try {
           foreach ($barcode as  $value) {
-            echo $value;
+            // echo $value;
             $allocate = new AllocatedBarCode();
+            $allocate->mfg_id = auth('manufacturer')->user()->id;
             $allocate->distributor_id = $request['distributor'];
             $allocate->dealer_id = $request['dealer'];
             $allocate->barcode_id = $value;

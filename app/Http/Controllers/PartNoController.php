@@ -26,11 +26,11 @@ class PartNoController extends Controller
             // Pass the validated request data to ElementService for storage
             $this->partNoService->store($request);
             // Redirect back with a success message
-            return redirect()->back()->with('success', 'Model number created successfully!');
+            return redirect()->back()->with('success', 'Part number created successfully!');
         } catch (\Exception $e) {
             // Log the error and return an error message
             \Log::error('Error storing element: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'An error occurred while creating the model number.');
+            return redirect()->back()->with('error', 'An error occurred while creating the part number.');
         }
     }
 

@@ -49,7 +49,12 @@
                             <td>{{ $item->billingCycle }}</td>
                             <td>{{ $item->description }}</td>
                             <td>{{ $item->price }}</td>
-                            <td>{{ $item->isRenewal }}</td>
+                            <td>
+                            @if ( $item->isRenewal == 'on')
+                                <span>Yes</span>
+                            @else
+                            <span>No</span>
+                            @endif</td>
                         </tr>
                     @endforeach
                 </tbody>

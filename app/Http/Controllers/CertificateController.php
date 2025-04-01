@@ -9,7 +9,7 @@ class CertificateController extends Controller
 {
     public function downloadPDF(Request $request)
     {
-        
+        set_time_limit(300);
         $type = $request['type'];
         $barcode = $request['deviceId'];
         $letterHead = $request['letterHead'];

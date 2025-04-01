@@ -19,7 +19,7 @@ class DistributorService
             $distributor->manuf_id = auth("manufacturer")->user()->id;
             $distributor->business_name = $request['business_name'];
             $distributor->name = $request['business_name'];
-            $distributor->email = $request['business_name'];
+            $distributor->email = $request['email'];
             $distributor->password = $request['mobile'];
             $distributor->passwordText = $request['mobile'];
             $distributor->gender = $request['gender'];
